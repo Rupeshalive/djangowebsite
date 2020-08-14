@@ -1,8 +1,10 @@
 from django.views.decorators.csrf import requires_csrf_token
 from django.template.defaulttags import csrf_token
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.template.defaulttags import csrf_token
-from django.core.mail import send_mail
+from django.core.mail import send_mail, BadHeaderError
+from django.http import HttpResponse, HttpResponseRedirect
+
 from django.template.context_processors import csrf
 from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_protect
@@ -26,7 +28,7 @@ from django import forms # Add this
 #@csrf_protect
 #@csrf_token()
 def home(request):
-	if request.method == "POST" and "email" and "name":
+	if request.method == "GET": #"POST" and "email" and "name":
 		#con_name = request.POST['con_name']
 		#con_email = request.POST['con_email']
 		#con_company = request.POST['con_company']
@@ -39,21 +41,29 @@ def home(request):
 
 	#else:
 		#return render(request, 'home.html',{})
+		form = ContactForm()
+	else:	
+		
 		form = ContactForm(request.POST)
 		
 		if form.is_valid():
-			pass  # does nothing, just trigger the validation
-			send_mail(
-    			'name',
-    			'message.',
-    			'email',
-    			['web.transcendent@gmail.com'],
-    			fail_silently=False,
-					)
+			subject = form.cleaned_data['subject']
+			from_email = form.cleaned_data['from_email']
+			message = form.cleaned_data['message'] #pass # does nothing, just trigger the validation
+
+			try:
+				send_mail(subject, message, from_email, ['web.transcendent@gmail.com'],fail_silently=False,)
+
+			except BadHeaderError:
+				return HttpResponse('Invalid header found.')
+
+			#return redirect('Success')
 		
-	else:	
-		form = ContactForm()
+	
 	return render(request, 'home.html', {'form': form})
+
+def success(request):
+    return HttpResponse('Success! Thank you for your message.')
 
 
 
@@ -87,20 +97,26 @@ def blog(request):
 #@csrf_protect
 #@requires_csrf_token
 def contact_us(request):
-	#if request.method == 'POST':
-		#con_name = request.POST['con_name']
-		#con_email = request.POST['con_email']
-		#con_company = request.POST['con_company']
-		#inquiry = request.POST['inquiry']
-		#con_message = request.POST['con_message']
+	if request.method == 'POST':
+		con_name = request.POST['con_name']
+		con_email = request.POST['con_email']
+		con_company = request.POST['con_company']
+		inquiry = request.POST['inquiry']
+		con_message = request.POST['con_message', 'inquiry']
 		#context = RequestContext(request)
 		#context={'con_name':con_name,'con_email':con_email,'con_email':con_email,'inquiry':inquiry, 'con_message':con_message }
 		#context_dict.update(csrf(request))
 		#return render(request, 'contact_us.html', context)
-		#return render(request, 'contact_us.html',{'con_name':con_name})
+		#send_mail (con_name, con_email, con_company, inquiry, con_message,  ['web.transcendent@gmail.com'])
+		try:
+			send_mail(con_name, con_email, con_message, ['web.transcendent@gmail.com'],fail_silently=False,)
+		except BadHeaderError:
+			return HttpResponse('Invalid header found.')
 
-	#else:
-	return render(request, 'contact_us.html',{})
+		return render(request, 'contact_us.html',{'con_name':con_name})
+
+	else:
+		return render(request, 'contact_us.html', {})
 	
 
 def our_team(request):

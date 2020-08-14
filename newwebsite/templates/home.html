@@ -826,20 +826,21 @@
                     <div class="col-lg-7 ml-auto">
                         <div class="contact-form-service-wrap">
                             <div class="contact-title text-center section-space--mb_40">
-                                {% if name %}
-                                <center><h2>Thank You</h2>
-                                    <p>We Received your Email and Respond you Shortly</p></center>
-                                        <br/><br/> <br/>
-                                {% else %}
+                                
                                 <h3 class="mb-10">Need a hand?</h3>
                                 <p class="text">Reach out to the world’s most reliable Brand Solution Services.</p>
                             </div>
-                            <form id="contact-form" action="" method="post" novalidate>
+                            <form id="contact-form" action="" method="post">
                                  {% csrf_token %}
-                                {% include 'bs4_form.html' with form=form %}
-                                <button type="submit" class="btn btn-primary">Submit</button>
+                                 {{ form.as_p }}
+                                <div class="form-actions">
+
+
+                                   <!--{% include 'bs4_form.html' with form=form %}-->
+                                   <button type="submit" class="btn btn-primary">Submit</button>
+                                </div>
                                         </form>
-                                        {% endif %}
+                                
                             <!--<form id="contact-form" action="#" method="post">
                                 {% csrf_token %}
                                

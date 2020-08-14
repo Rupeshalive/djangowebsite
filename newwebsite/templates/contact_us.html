@@ -53,7 +53,9 @@
                                     <h2>Get In Touch</h2>
                                     <div class = "line"></div>
                                 </div>
-                                <form id="contact-form" action="contact_us.html" method="Get">    
+                                <form action="{% url 'contact_us' %}" method="post">
+                                {% csrf_token %} 
+                                <div class="form-actions">   
 
                                  
                                     <div class="contact-form">
@@ -92,6 +94,7 @@
                                         <div class="submit-btn mt-20">
                                             <button class="ht-btn ht-btn-md" type="submit">Send message</button>
                                             <p class="form-messege"></p>
+                                        </div>
                                         </div>
                                     </div>
                                 </form>
