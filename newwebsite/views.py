@@ -102,16 +102,15 @@ def contact_us(request):
 		con_email = request.POST['con_email']
 		con_company = request.POST['con_company']
 		inquiry = request.POST['inquiry']
-		con_message = request.POST['con_message', 'inquiry']
+		con_message = request.POST['con_message']
 		#context = RequestContext(request)
 		#context={'con_name':con_name,'con_email':con_email,'con_email':con_email,'inquiry':inquiry, 'con_message':con_message }
 		#context_dict.update(csrf(request))
 		#return render(request, 'contact_us.html', context)
 		#send_mail (con_name, con_email, con_company, inquiry, con_message,  ['web.transcendent@gmail.com'])
-		try:
-			send_mail(con_name, con_email, con_message, ['web.transcendent@gmail.com'],fail_silently=False,)
-		except BadHeaderError:
-			return HttpResponse('Invalid header found.')
+		
+		send_mail(con_name, con_email, con_message, ['web.transcendent@gmail.com'],fail_silently=False,)
+		
 
 		return render(request, 'contact_us.html',{'con_name':con_name})
 
